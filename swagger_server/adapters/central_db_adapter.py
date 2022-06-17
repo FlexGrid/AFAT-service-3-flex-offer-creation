@@ -43,6 +43,13 @@ class CentralDBAdapter:
         if not self.have_valid_token():
             self.get_token()
 
+        if 'access_token' not in __class__.token:
+            print(__class__.token)
+            if 'error' in __class__.token:
+                abort(403, description=f"central db adapter: {__class__.token['error']}")
+            else:
+                abort(403, description='central db adapter: Invalid token')
+
         return {'Authorization': f"Bearer {__class__.token['access_token']}"}
 
     def get_collection(self, collection, where_params):
