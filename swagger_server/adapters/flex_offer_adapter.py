@@ -208,7 +208,7 @@ def create_quantity_vs_time(aggregate):
     return {
         'title': "Aggregate offer, quantity vs time for a given price",
         'xlabel': "Time",
-        'ylabel': "Quantity (kWη)",
+        'ylabel': "Quantity (kWh)",
         'serries': [
             {
                 'xvalues': [t for t in plots[p]],
@@ -239,8 +239,8 @@ def create_quantity_vs_price(aggregate):
 
     return {
         'title': "Aggregate offer, quantity vs price for a given time",
-        'xlabel': "Price (€/kWη)",
-        'ylabel': "Quantity (kWη)",
+        'xlabel': "Price (€/kWh)",
+        'ylabel': "Quantity (kWh)",
         'serries': serries,
         'plot_type': 'scatter',
     }
