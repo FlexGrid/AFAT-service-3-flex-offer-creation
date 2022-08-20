@@ -5,7 +5,7 @@ from swagger_server.models.flex_offer_params import FlexOfferParams
 from swagger_server.models.flex_offer_result import FlexOfferResult
 from swagger_server.adapters.central_db_adapter import CentralDBAdapter
 import math
-
+from operator import itemgetter
 
 def post_flex_offers_adapter(flex_offer_params):
     assert isinstance(flex_offer_params, FlexOfferParams)
@@ -186,24 +186,22 @@ def clear_market(flex_offer, flex_request):
 
 
 def create_quantity_vs_time(aggregate):
-
-    prices = []
+    prices = {}
     for d in aggregate['data_points']:
         for fl in d['flexibility']:
-            prices += [fl['price_euro_per_kw']]
+            prices[fl['price_euro_per_kw']] = 1
 
-    prices.sort()
+    prices = sorted(prices.keys())
 
     plots = {p: {} for p in prices}
 
     for d in aggregate['data_points']:
         for fl in d['flexibility']:
             for p in prices:
-                if p > fl['price_euro_per_kw']:
-                    break
-                if d['timestamp'] not in plots[p]:
-                    plots[p][d['timestamp']] = 0
-                plots[p][d['timestamp']] += fl['quantity_kw']
+                if p >= fl['price_euro_per_kw']:
+                    if d['timestamp'] not in plots[p]:
+                        plots[p][d['timestamp']] = 0
+                    plots[p][d['timestamp']] += fl['quantity_kw']
 
     return {
         'title': "Aggregate offer, quantity vs time for a given price",
